@@ -1,6 +1,7 @@
 from aiogram import types, Dispatcher
 from loguru import logger
 
+from keyboards.clients import client_keyboard
 from keyboards.owner import owner_keyboard
 from settings import owner
 
@@ -9,6 +10,8 @@ async def start(message: types.Message):
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
     if message.from_user.id == int(owner):
         return await message.answer("Привет", reply_markup=owner_keyboard)
+    else:
+        return await message.answer("Привет", reply_markup=client_keyboard)
 
 
 def register_handlers(dispatcher: Dispatcher):
