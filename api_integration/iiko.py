@@ -42,11 +42,7 @@ async def get_menu(token: str):
 async def set_groups():
     groups = {
         "Пицца": "5edeba69-c936-4525-a42e-45372c930b52",
-        "Запеченные роллы Пицца Хаус": "309f6cd5-94cd-4430-a943-f8dc2bb371ef",
-        "Жаренные роллы Пицца Хаус": "e67dade0-0d24-4520-ae82-dbdd8a853d3b",
-        "Классические роллы Пицца Хаус": "1bca3ac1-6064-408f-ab91-c10b9109ee2c",
-        "Сливочные роллы Пицца Хаус": "6a39c5f7-a741-4c25-995a-75fb03d5416c",
-        "Фирменные роллы Пицца Хаус": "cbc98a12-c83b-4015-8c12-941c00d0cf76",
+        "Роллы": "309f6cd5-94cd-4430-a943-f8dc2bb371ef e67dade0-0d24-4520-ae82-dbdd8a853d3b 1bca3ac1-6064-408f-ab91-c10b9109ee2c 6a39c5f7-a741-4c25-995a-75fb03d5416c cbc98a12-c83b-4015-8c12-941c00d0cf76",
         "Суши": "9e9ffdf5-1ad2-40b7-bfff-9fb2752feb7d",
         "Паста": "19a79433-e4ec-47b2-807a-c4fa2e1ce16b",
         "Десерты": "892216bc-7907-4b70-92ec-a43ea43060fa",
@@ -68,5 +64,7 @@ async def set_groups():
             session.add(new)
             await session.commit()
         is_set = False
-
+    group_list = await get_groups_list()
+    for item in group_list:
+        print(item[0].name)
 

@@ -12,7 +12,7 @@ postgres_url = URL.create(
     username="postgres",
     password="postgres",
     port=5432,
-    database="template1",
+    database="postgres",
     host="localhost",
 )
 

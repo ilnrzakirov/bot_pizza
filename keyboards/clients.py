@@ -1,5 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
+from repositories.groups import get_groups_list
+
 delivery = KeyboardButton("🚚 О доставке PizzaHouse")
 menu = KeyboardButton("🍽 Меню")
 stocks = KeyboardButton("🔥 Акции")
@@ -14,8 +16,8 @@ client_keyboard.row(locations, help)
 
 
 async def get_menu_button():
-    groups = [] # TODO вытащить с бд
+    groups = await get_groups_list()
     menu_inline = InlineKeyboardMarkup()
     for item in groups:
-        menu_inline.add(InlineKeyboardButton(f"{item.name}", callback_data=f"{item.iiko_id}"))
+        menu_inline.add(InlineKeyboardButton(f"{item[0].name}", callback_data=f"{item[0].name}"))
     return menu_inline

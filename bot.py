@@ -6,7 +6,7 @@ from bot_init import (
     bot,
     dispatcher,
 )
-from handlers import start
+from handlers import start, client
 from utils.loger_init import logger
 from handlers import owner
 
@@ -20,6 +20,7 @@ async def on_startup(_):
 async def main():
     start.register_handlers(dispatcher)
     owner.register_handlers_owner(dispatcher)
+    client.register_handlers_client(dispatcher)
     logger.info("Бот запущен")
     await dispatcher.start_polling(bot)
 
