@@ -64,7 +64,4 @@ async def set_groups():
             session.add(new)
             await session.commit()
         is_set = False
-    group_list = await get_groups_list()
-    for item in group_list:
-        print(item[0].name)
 
