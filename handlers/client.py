@@ -35,6 +35,8 @@ async def help_menu(message: types.Message):
 
 async def get_group_items(call: CallbackQuery):
     logger.info(f"Получена команда {call.data} от {call.from_user.username} - id {call.from_user.id}")
+    groups_id = groups[call.data]
+    print(groups_id)
     await call.message.answer(text="Ok")
 
 def register_handlers_client(dispatcher: Dispatcher):
