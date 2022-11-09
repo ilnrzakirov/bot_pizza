@@ -54,9 +54,10 @@ class Product(BaseModel):
     price = Column(Integer, nullable=False, default=0)
     modification = relationship("Modification", secondary="association_mod")
 
+
 class Basket(BaseModel):
 
-    __tablemane__ = "baskets"
+    __tablename__ = "baskets"
 
     id = Column(Integer, primary_key=True)
     chat_id = Column(Integer, nullable=False)
