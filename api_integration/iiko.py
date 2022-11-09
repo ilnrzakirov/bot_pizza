@@ -54,3 +54,10 @@ async def set_groups():
             await session.commit()
         is_set = False
 
+
+async def get_products(data):
+    groups = await get_groups_list()
+    for group in groups:
+        pass
+
+

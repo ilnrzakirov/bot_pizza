@@ -33,8 +33,15 @@ association = sqlalchemy.Table(
     "association", BaseModel.metadata,
     Column("product_id", ForeignKey("products.id")),
     Column("basket_id", ForeignKey("baskets.id")),
+    Column("count", Integer),
 )
 
+
+association_mod = sqlalchemy.Table(
+    "association_mod", BaseModel.metadata,
+    Column("product_id", ForeignKey("products.id")),
+    Column("modifications_id", ForeignKey("modifications.id")),
+)
 
 class Product(BaseModel):
 
@@ -43,7 +50,9 @@ class Product(BaseModel):
     id = Column(Integer, primary_key=True)
     name = Column(VARCHAR(300), nullable=False)
     group = Column(Integer, ForeignKey("groups.id"))
-
+    image = Column(VARCHAR(500), nullable=True)
+    price = Column(Integer, nullable=False, default=0)
+    modification = relationship("Modification", secondary="association_mod")
 
 class Basket(BaseModel):
 
@@ -52,3 +61,11 @@ class Basket(BaseModel):
     id = Column(Integer, primary_key=True)
     chat_id = Column(Integer, nullable=False)
     products = relationship("Product", secondary="association")
+
+
+class Modification(BaseModel):
+
+    __tablename__ = "modifications"
+    id = Column(Integer, primary_key=True)
+    name = Column(VARCHAR(300), nullable=False)
+    price = Column(Integer, nullable=False, default=0)
