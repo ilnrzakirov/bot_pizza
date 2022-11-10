@@ -73,6 +73,12 @@ class Basket(BaseModel):
     chat_id = Column(Integer, nullable=False)
     products = relationship("Product", secondary="association")
 
+    def __str__(self):
+        return self.id
+
+    def __init__(self, chat_id: int):
+        self.chat_id = chat_id
+
 
 class Modification(BaseModel):
 
@@ -81,3 +87,10 @@ class Modification(BaseModel):
     id = Column(Integer, primary_key=True)
     name = Column(VARCHAR(300), nullable=False)
     price = Column(Integer, nullable=False, default=0)
+
+    def __str__(self):
+        return self.name
+
+    def __init__(self, name: str, price: int):
+        self.name = name
+        self.price = price
