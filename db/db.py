@@ -46,20 +46,26 @@ class Product(BaseModel):
     __tablename__ = "products"
 
     id = Column(Integer, primary_key=True)
+    product_id = Column(VARCHAR(300), nullable=False)
     name = Column(VARCHAR(300), nullable=False)
     group = Column(Integer, ForeignKey("groups.id"))
     image = Column(VARCHAR(500), nullable=True)
     price = Column(Integer, nullable=False, default=0)
     modification = relationship("Modification", secondary="association_mod")
+    weight = Column(Integer, nullable=True)
+    description = Column(VARCHAR(1200), nullable=True)
 
     def __str__(self):
         return self.name
 
-    def __init__(self, name: str, group_id: int, image_url: str, price: int):
+    def __init__(self, name: str, group_id: int, image_url: str,
+                 price: int, product_id: str, weight: str = 0):
         self.name = name
         self.group = group_id
         self.image = image_url
         self.price = price
+        self.product_id = product_id
+        self.weight = weight
 
 
 class Basket(BaseModel):
@@ -82,8 +88,11 @@ class Modification(BaseModel):
     __tablename__ = "modifications"
 
     id = Column(Integer, primary_key=True)
+    mod_id = Column(VARCHAR(300), nullable=False)
     name = Column(VARCHAR(300), nullable=False)
     price = Column(Integer, nullable=False, default=0)
+    weight = Column(Integer, nullable=True)
+    product_id = Column(VARCHAR(500), nullable=False)
 
     def __str__(self):
         return self.name
