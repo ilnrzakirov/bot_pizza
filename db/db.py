@@ -43,6 +43,7 @@ association_mod = sqlalchemy.Table(
     Column("modifications_id", ForeignKey("modifications.id")),
 )
 
+
 class Product(BaseModel):
 
     __tablename__ = "products"
@@ -53,6 +54,15 @@ class Product(BaseModel):
     image = Column(VARCHAR(500), nullable=True)
     price = Column(Integer, nullable=False, default=0)
     modification = relationship("Modification", secondary="association_mod")
+
+    def __str__(self):
+        return self.name
+
+    def __init__(self, name: str, group_id: int, image_url: str, price: int):
+        self.name = name
+        self.group = group_id
+        self.image = image_url
+        self.price = price
 
 
 class Basket(BaseModel):
