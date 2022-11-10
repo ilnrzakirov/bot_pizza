@@ -67,6 +67,7 @@ class Basket(BaseModel):
 class Modification(BaseModel):
 
     __tablename__ = "modifications"
+
     id = Column(Integer, primary_key=True)
     name = Column(VARCHAR(300), nullable=False)
     price = Column(Integer, nullable=False, default=0)
