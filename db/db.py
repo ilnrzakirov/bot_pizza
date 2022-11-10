@@ -1,10 +1,7 @@
-import datetime
-
 import sqlalchemy
 from sqlalchemy import (
     VARCHAR,
     Column,
-    Date,
     Integer, ForeignKey,
 )
 from sqlalchemy.ext.declarative import declarative_base
