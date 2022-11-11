@@ -91,7 +91,7 @@ class Modification(BaseModel):
     mod_id = Column(VARCHAR(300), nullable=False)
     name = Column(VARCHAR(300), nullable=False)
     price = Column(Integer, nullable=False, default=0)
-    weight = Column(Integer, nullable=True)
+    weight = Column(Integer, nullable=False)
     product_id = Column(VARCHAR(500), nullable=False)
 
     def __str__(self):
