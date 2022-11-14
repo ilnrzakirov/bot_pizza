@@ -52,7 +52,7 @@ class Product(BaseModel):
     image = Column(VARCHAR(500), nullable=True)
     price = Column(Integer, nullable=False, default=0)
     modification = relationship("Modification", secondary="association_mod")
-    weight = Column(VARCHAR(300), nullable=True)
+    weight = Column(Integer, nullable=True)
     description = Column(VARCHAR(1200), nullable=True)
 
     def __str__(self):
