@@ -1,13 +1,14 @@
 from aiogram import Dispatcher, types
 from aiogram.types import ContentType
 
-from api_integration.iiko import get_token, get_menu, set_groups
+from api_integration.iiko import get_token, get_menu, set_groups, get_products
 
 
 async def update_menu(message: types.Message):
     token = await get_token()
     data = await get_menu(token)
     await set_groups()
+    await get_products(data)
 
 
 def register_handlers_owner(dispatcher: Dispatcher):
