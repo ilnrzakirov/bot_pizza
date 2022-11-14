@@ -11,7 +11,7 @@ def asinc_engine(url: URL | str) -> AsyncEngine:
     """
         Асинхронный движок БД
     """
-    return create_async_engine(url=url, echo=True, encoding="utf-8", pool_pre_ping=True)
+    return create_async_engine(url=url, echo=True, encoding="utf-8", pool_pre_ping=True, pool_size=100, max_overflow=0)
 
 
 async def proceed_schemas(engin: AsyncEngine, metadata) -> None:

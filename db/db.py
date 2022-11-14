@@ -2,7 +2,7 @@ import sqlalchemy
 from sqlalchemy import (
     VARCHAR,
     Column,
-    Integer, ForeignKey,
+    Integer, ForeignKey, FLOAT, DECIMAL
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -48,24 +48,25 @@ class Product(BaseModel):
     id = Column(Integer, primary_key=True)
     product_id = Column(VARCHAR(300), nullable=False)
     name = Column(VARCHAR(300), nullable=False)
-    group = Column(Integer, ForeignKey("groups.id"))
+    group = Column(Integer, ForeignKey("groups.id"), nullable=True)
     image = Column(VARCHAR(500), nullable=True)
     price = Column(Integer, nullable=False, default=0)
     modification = relationship("Modification", secondary="association_mod")
-    weight = Column(Integer, nullable=True)
+    weight = Column(VARCHAR(300), nullable=True)
     description = Column(VARCHAR(1200), nullable=True)
 
     def __str__(self):
         return self.name
 
     def __init__(self, name: str, group_id: int, image_url: str,
-                 price: int, product_id: str, weight: str = 0):
+                 price: int, product_id: str, description: str, weight: int = 0):
         self.name = name
         self.group = group_id
         self.image = image_url
         self.price = price
         self.product_id = product_id
         self.weight = weight
+        self.description = description
 
 
 class Basket(BaseModel):

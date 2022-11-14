@@ -17,7 +17,7 @@ def parsing_json(file):
     products_dish = []
     products_modifier = []
     dish = (
-        'id', 'groupId', 'productCategoryId', 'name', 'sizePrices', 'weight',
+        'id', 'groupId', 'productCategoryId', 'name', 'sizePrice', 'weight',
         'groupModifiers', 'imageLinks', 'description', 'parentGroup'
     )
     modifier = ('id', 'groupId', 'productCategoryId', 'name', 'sizePrices', 'weight', 'parentGroup')
@@ -34,7 +34,7 @@ def parsing_json(file):
                             try:
                                 tmp[key] = value[0]
                             except IndexError:
-                                tmp[key] = []
+                                tmp[key] = ''
                         elif key == 'groupModifiers':
                             groupModifiers = []
                             for val in value:

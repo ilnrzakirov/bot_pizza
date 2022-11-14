@@ -3,9 +3,10 @@ import json
 import requests
 from loguru import logger
 
-from db.db import Groups
-from repositories.groups import get_groups_list
+from db.db import Groups, Product
+from repositories.groups import get_groups_list, get_group_by_id
 from settings import API_LOGIN, ORG_ID, session_maker, groups
+from utils.parsing import parsing_json
 
 
 async def get_token():
@@ -57,7 +58,27 @@ async def set_groups():
 
 async def get_products(data):
     groups = await get_groups_list()
-    for group in groups:
-        pass
+    market_dict = parsing_json(data)
+    # sql = "DROP TABLE IF EXISTS products;"
+    session = session_maker()
+    # await session.execute(sql)
+    # await session.commit()
+    product_list = []
+    for product in market_dict.get("products_dish"):
+        group = await get_group_by_id(product.get("parentGroup"))
+        if not group:
+            continue
+        item = Product(
+            product_id=product.get("id"),
+            name=product.get("name"),
+            group_id=group.id,
+            image_url=product.get("imageLinks", "None"),
+            description=product.get("description", None),
+            price=product.get("sizePrice", 0),
+            weight=int(product.get("weight", 0))
+        )
+        product_list.append(item)
+    session.add_all(product_list)
+    await session.commit()
 
 
