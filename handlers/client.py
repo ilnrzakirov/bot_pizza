@@ -1,7 +1,11 @@
+import aiogram
 from aiogram import Dispatcher, types
-from aiogram.types import ContentType, CallbackQuery
+from aiogram.types import ContentType, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, InputMedia, InputFile, \
+    InputMediaPhoto
+from aiogram.utils.exceptions import BadRequest
 from loguru import logger
 
+import bot
 from keyboards.clients import get_menu_button
 from repositories.groups import get_group_by_id
 from repositories.products import get_product_by_group_id
@@ -23,13 +27,16 @@ async def stocks(message: types.Message):
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
     await message.answer("Что то есть")
 
+
 async def basket(message: types.Message):
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
     await message.answer("Что то есть")
 
+
 async def locations(message: types.Message):
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
     await message.answer("Что то есть")
+
 
 async def help_menu(message: types.Message):
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
@@ -38,12 +45,35 @@ async def help_menu(message: types.Message):
 
 async def get_group_items(call: CallbackQuery):
     logger.info(f"Получена команда {call.data} от {call.from_user.username} - id {call.from_user.id}")
-    groups_id = groups[call.data]
+    group_name = call.data.split()[0]
+    groups_id = groups[group_name]
     group = await get_group_by_id(groups_id)
     products = await get_product_by_group_id(group)
-    for product in products:
-        print(product.name)
-    await call.message.answer(text="Ok")
+    keyboard = InlineKeyboardMarkup()
+    pos = 0
+    if len(call.data.split()) != 1:
+        pos = int(call.data.split()[1])
+    add = InlineKeyboardButton("Добавить в корзину", callback_data="add")
+    next = InlineKeyboardButton("➡", callback_data=f"{group_name} {pos + 1}")
+    prev = InlineKeyboardButton("⬅", callback_data=f"{group_name} {pos - 1 if pos > 0 else 0}")
+    navigate = InlineKeyboardButton(f"{pos + 1}/{len(products)}", callback_data=call.data)
+    keyboard.add(add)
+    keyboard.row(prev, next)
+    keyboard.add(navigate)
+    file = InputMedia(media=products[pos].image, caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
+                                                   f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
+    try:
+        if len(call.data.split()) == 1:
+            await bot.bot.send_photo(chat_id=call.message.chat.id, photo=products[pos].image, reply_markup=keyboard,
+                                     caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
+                                             f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
+        else:
+            await call.message.edit_media(media=file, reply_markup=keyboard)
+    except BadRequest:
+        file = InputMedia(media="https://prikolnye-kartinki.ru/img/picture/Sep/23/9d857169c84422fdaa28df62667a1467/5.jpg",
+                          caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
+                                               f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
+        await call.message.edit_media(media=file, reply_markup=keyboard)
 
 
 def register_handlers_client(dispatcher: Dispatcher):
@@ -53,4 +83,4 @@ def register_handlers_client(dispatcher: Dispatcher):
     dispatcher.register_message_handler(basket, text="🛒 Корзина", content_types=ContentType.TEXT)
     dispatcher.register_message_handler(locations, text="📍 Как нас найти", content_types=ContentType.TEXT)
     dispatcher.register_message_handler(help_menu, text="⚙ Помощь", content_types=ContentType.TEXT)
-    dispatcher.register_callback_query_handler(get_group_items, lambda call: call.data in groups.keys(),)
+    dispatcher.register_callback_query_handler(get_group_items, lambda call: call.data.split(" ")[0] in groups.keys(), )
