@@ -3,6 +3,8 @@ from aiogram.types import ContentType, CallbackQuery
 from loguru import logger
 
 from keyboards.clients import get_menu_button
+from repositories.groups import get_group_by_id
+from repositories.products import get_product_by_group_id
 from settings import groups
 
 
@@ -33,11 +35,16 @@ async def help_menu(message: types.Message):
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
     await message.answer("Что то есть")
 
+
 async def get_group_items(call: CallbackQuery):
     logger.info(f"Получена команда {call.data} от {call.from_user.username} - id {call.from_user.id}")
     groups_id = groups[call.data]
-    print(groups_id)
+    group = await get_group_by_id(groups_id)
+    products = await get_product_by_group_id(group)
+    for product in products:
+        print(product.name)
     await call.message.answer(text="Ok")
+
 
 def register_handlers_client(dispatcher: Dispatcher):
     dispatcher.register_message_handler(menu, text="🍽 Меню", content_types=ContentType.TEXT)
