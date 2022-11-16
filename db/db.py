@@ -93,7 +93,7 @@ class Modification(BaseModel):
     name = Column(VARCHAR(300), nullable=False)
     price = Column(sqlalchemy.types.Float, nullable=False, default=0)
     weight = Column(sqlalchemy.types.Float, nullable=False)
-    product_id = Column(VARCHAR(500), nullable=False)
+    product = Column(Integer, ForeignKey("products.id"), nullable=True)
     type = Column(VARCHAR(500), nullable=False)
 
     def __str__(self):
