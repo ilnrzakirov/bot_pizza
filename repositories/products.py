@@ -12,6 +12,7 @@ async def get_product_by_group_id(group: Groups) -> list[Product]:
     products = await session.execute(query)
     for product in products:
         product_list.append(product[0])
+    await session.close()
     return product_list
 
 
