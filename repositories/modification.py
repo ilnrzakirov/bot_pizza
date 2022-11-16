@@ -5,7 +5,7 @@ from settings import session_maker
 from sqlalchemy import select
 
 
-async def get_product_by_group_id(product: Product) -> list[Modification]:
+async def get_modifications_by_product_id(product: Product) -> list[Modification]:
     session = session_maker()
     query = sqlalchemy.select(Modification).where(Modification.product_id == product.id)
     modification_list = []
