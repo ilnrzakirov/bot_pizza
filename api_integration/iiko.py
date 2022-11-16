@@ -43,6 +43,7 @@ async def get_menu(token: str):
 
 async def set_groups():
     is_set = False
+    logger.info("Собираем группы")
     group_list = await get_groups_list()
     for key, value in groups.items():
         for group in group_list:
@@ -58,12 +59,9 @@ async def set_groups():
 
 
 async def get_products(data):
-    groups = await get_groups_list()
+    logger.info("Собираем продукты")
     market_dict = parsing_json(data)
-    # sql = "DROP TABLE IF EXISTS products;"
     session = session_maker()
-    # await session.execute(sql)
-    # await session.commit()
     product_list = []
     for product in market_dict.get("products_dish"):
         group = await get_group_by_id(product.get("parentGroup"))
@@ -87,6 +85,7 @@ async def get_products(data):
 
 
 async def get_modifications(data):
+    logger.info("Собираем модификаторы")
     market_dict = parsing_json(data)
     session = session_maker()
     mod_list = []
