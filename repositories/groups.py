@@ -29,6 +29,7 @@ async def get_products_list() -> list[Product]:
 async def get_product_by_id(id_in: str) -> Product | None:
     session = session_maker()
     products = await get_products_list()
+    session.close()
     for product in products:
         if id_in in product[0].product_id:
             return product[0]
