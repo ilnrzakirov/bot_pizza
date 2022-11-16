@@ -9,7 +9,6 @@ async def update_menu(message: types.Message):
     data = await get_menu(token)
     await set_groups()
     await get_products(data)
-    await get_modifications(data)
 
 
 def register_handlers_owner(dispatcher: Dispatcher):

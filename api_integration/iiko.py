@@ -82,6 +82,7 @@ async def get_products(data):
         product_list.append(item)
     session.add_all(product_list)
     await session.commit()
+    await get_modifications(data)
 
 
 async def get_modifications(data):

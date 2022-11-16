@@ -20,7 +20,7 @@ async def get_product_by_iiko_id(iiko_id: str):
     query = sqlalchemy.select(Product).where(Product.product_id == iiko_id)
     product = await session.execute(query)
     instance = product.scalars().first()
-    session.close()
+    await session.close()
     if not instance:
         return None
     return instance
@@ -28,3 +28,7 @@ async def get_product_by_iiko_id(iiko_id: str):
 
 async def delete_all_products():
     session = session_maker()
+    query = sqlalchemy.delete(Product)
+    await session.execute(query)
+    await session.commit()
+    await session.close()
