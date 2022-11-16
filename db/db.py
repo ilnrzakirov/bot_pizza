@@ -94,6 +94,7 @@ class Modification(BaseModel):
     price = Column(Integer, nullable=False, default=0)
     weight = Column(Integer, nullable=False)
     product_id = Column(VARCHAR(500), nullable=False)
+    type = Column(VARCHAR(500), nullable=False)
 
     def __str__(self):
         return self.name

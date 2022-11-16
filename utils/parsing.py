@@ -20,7 +20,7 @@ def parsing_json(file):
         'id', 'groupId', 'productCategoryId', 'name', 'sizePrice', 'weight',
         'groupModifiers', 'imageLinks', 'description', 'parentGroup'
     )
-    modifier = ('id', 'groupId', 'productCategoryId', 'name', 'sizePrices', 'weight', 'parentGroup')
+    modifier = ('id', 'groupId', 'productCategoryId', 'name', 'sizePrices', 'weight', 'parentGroup', 'measureUnit')
     products = file.get('products')
     for x in products:
         if x.get('type') == 'Dish':
