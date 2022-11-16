@@ -34,3 +34,5 @@ groups = {
     "Закуски": "cac2b8e1-9694-42a1-a503-e2edaa92a125",
     "Комбо": "dc8ff180-f9a3-4ec4-ab20-9d0d9b1c441c",
 }
+
+URL = config("URL")
