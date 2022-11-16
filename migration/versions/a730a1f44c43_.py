@@ -1,8 +1,8 @@
 """
 
-Revision ID: c5bd469f2756
-Revises: 5c28317b2763
-Create Date: 2022-11-09 21:31:57.343625
+Revision ID: a730a1f44c43
+Revises: 
+Create Date: 2022-11-16 17:40:29.794126
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c5bd469f2756'
-down_revision = '5c28317b2763'
+revision = 'a730a1f44c43'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -23,18 +23,30 @@ def upgrade() -> None:
     sa.Column('chat_id', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('groups',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('iiko_id', sa.VARCHAR(length=500), nullable=False),
+    sa.Column('name', sa.VARCHAR(length=500), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('modifications',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('mod_id', sa.VARCHAR(length=300), nullable=False),
     sa.Column('name', sa.VARCHAR(length=300), nullable=False),
-    sa.Column('price', sa.Integer(), nullable=False),
+    sa.Column('price', sa.Float(), nullable=False),
+    sa.Column('weight', sa.Float(), nullable=False),
+    sa.Column('product_id', sa.VARCHAR(length=500), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('products',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('product_id', sa.VARCHAR(length=300), nullable=False),
     sa.Column('name', sa.VARCHAR(length=300), nullable=False),
     sa.Column('group', sa.Integer(), nullable=True),
     sa.Column('image', sa.VARCHAR(length=500), nullable=True),
-    sa.Column('price', sa.Integer(), nullable=False),
+    sa.Column('price', sa.Float(), nullable=False),
+    sa.Column('weight', sa.Float(), nullable=True),
+    sa.Column('description', sa.VARCHAR(length=1200), nullable=True),
     sa.ForeignKeyConstraint(['group'], ['groups.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -60,5 +72,6 @@ def downgrade() -> None:
     op.drop_table('association')
     op.drop_table('products')
     op.drop_table('modifications')
+    op.drop_table('groups')
     op.drop_table('baskets')
     # ### end Alembic commands ###

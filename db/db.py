@@ -50,9 +50,9 @@ class Product(BaseModel):
     name = Column(VARCHAR(300), nullable=False)
     group = Column(Integer, ForeignKey("groups.id"), nullable=True)
     image = Column(VARCHAR(500), nullable=True)
-    price = Column(Integer, nullable=False, default=0)
+    price = Column(sqlalchemy.types.Float, nullable=False, default=0)
     modification = relationship("Modification", secondary="association_mod")
-    weight = Column(Integer, nullable=True)
+    weight = Column(sqlalchemy.types.Float, nullable=True)
     description = Column(VARCHAR(1200), nullable=True)
 
     def __str__(self):
@@ -91,8 +91,8 @@ class Modification(BaseModel):
     id = Column(Integer, primary_key=True)
     mod_id = Column(VARCHAR(300), nullable=False)
     name = Column(VARCHAR(300), nullable=False)
-    price = Column(Integer, nullable=False, default=0)
-    weight = Column(Integer, nullable=False)
+    price = Column(sqlalchemy.types.Float, nullable=False, default=0)
+    weight = Column(sqlalchemy.types.Float, nullable=False)
     product_id = Column(VARCHAR(500), nullable=False)
     type = Column(VARCHAR(500), nullable=False)
 

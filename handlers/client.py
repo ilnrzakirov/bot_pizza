@@ -83,4 +83,4 @@ def register_handlers_client(dispatcher: Dispatcher):
     dispatcher.register_message_handler(basket, text="🛒 Корзина", content_types=ContentType.TEXT)
     dispatcher.register_message_handler(locations, text="📍 Как нас найти", content_types=ContentType.TEXT)
     dispatcher.register_message_handler(help_menu, text="⚙ Помощь", content_types=ContentType.TEXT)
-    dispatcher.register_callback_query_handler(get_group_items, lambda call: call.data.split(" ")[0] in groups.keys(), )
+    dispatcher.register_callback_query_handler(get_group_items, lambda call: call.data.split(" ")[0] in groups.keys(),)
