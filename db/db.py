@@ -59,7 +59,7 @@ class Product(BaseModel):
         return self.name
 
     def __init__(self, name: str, group_id: int, image_url: str,
-                 price: int, product_id: str, description: str, weight: int = 0):
+                 price: float, product_id: str, description: str, weight: float = 0):
         self.name = name
         self.group = group_id
         self.image = image_url
@@ -99,6 +99,11 @@ class Modification(BaseModel):
     def __str__(self):
         return self.name
 
-    def __init__(self, name: str, price: int):
+    def __init__(self, name: str, price: float, mod_id: str,
+                 mod_type: str, product_id: int,  weight: float = 0,):
         self.name = name
         self.price = price
+        self.mod_id = mod_id
+        self.weight = weight
+        self.type = mod_type
+        self.product = product_id

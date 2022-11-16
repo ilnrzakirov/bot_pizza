@@ -13,6 +13,7 @@ async def get_groups_list() -> list[Groups]:
 async def get_group_by_id(id_in: str) -> Groups | None:
     session = session_maker()
     groups = await get_groups_list()
+    session.close()
     for group in groups:
         if id_in in group[0].iiko_id:
             return group[0]
