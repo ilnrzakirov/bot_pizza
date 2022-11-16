@@ -53,7 +53,7 @@ async def get_group_items(call: CallbackQuery):
     pos = 0
     if len(call.data.split()) != 1:
         pos = int(call.data.split()[1])
-    add = InlineKeyboardButton("Добавить в корзину", callback_data="add")
+    add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}")
     next = InlineKeyboardButton("➡", callback_data=f"{group_name} {pos + 1}")
     prev = InlineKeyboardButton("⬅", callback_data=f"{group_name} {pos - 1 if pos > 0 else 0}")
     navigate = InlineKeyboardButton(f"{pos + 1}/{len(products)}", callback_data=call.data)
