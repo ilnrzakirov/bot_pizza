@@ -4,12 +4,11 @@ from db.db import Groups, Product
 from settings import session_maker
 from loguru import logger
 
-
-
 async def get_groups_list() -> list[Groups]:
     logger.info("Запрос на выдачу списка групп из БД")
     session = session_maker()
     group_list = await session.execute(select(Groups))
+    await session.close()
     return group_list
 
 
@@ -28,6 +27,7 @@ async def get_products_list() -> list[Product]:
     logger.info("Запрос на выдачу списка продуктов")
     session = session_maker()
     product_list = await session.execute(select(Product))
+    await session.close()
     return product_list
 
 
