@@ -82,8 +82,16 @@ async def add_basket(call: CallbackQuery):
     product = await get_product_by_iiko_id(product_id)
     mod_id = product.mod_group
     data = await get_modifications_by_mod_id(mod_id)
+    mod_keyboard = InlineKeyboardMarkup()
     for item in data:
-        print(item)
+        text = item.name.replace("; Т", ", Тонкое тесто").replace("; П", ", Пышное тесто")
+        text = f"{text} {int(item.price)} руб"
+        button = InlineKeyboardButton(text=text, callback_data=f"{item.mod_id}")
+        mod_keyboard.add(button)
+    chat = call.from_user.id
+    await call.message.delete()
+    await bot.bot.send_message(chat_id=chat, text="Выбери размер", reply_markup=mod_keyboard)
+
 
 
 def register_handlers_client(dispatcher: Dispatcher):
