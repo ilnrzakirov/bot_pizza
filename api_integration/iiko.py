@@ -97,7 +97,7 @@ async def get_modifications(data):
             name=mod.get("name"),
             price=mod.get("sizePrices", 0),
             weight=mod.get("weight", 0),
-            group_id=group.id,
+            group_id=mod.get("parentGroup", "None"),
             mod_type=mod.get("measureUnit", "None"),
         )
         mod_list.append(item)
