@@ -89,9 +89,6 @@ async def get_modifications(data):
     session = session_maker()
     mod_list = []
     for mod in market_dict.get("products_modifier"):
-        group = await get_group_by_id(mod.get("parentGroup"))
-        if not group:
-            continue
         item = Modification(
             mod_id=mod.get("id"),
             name=mod.get("name"),

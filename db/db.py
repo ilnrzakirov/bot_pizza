@@ -54,12 +54,14 @@ class Product(BaseModel):
     modification = relationship("Modification", secondary="association_mod")
     weight = Column(sqlalchemy.types.Float, nullable=True)
     description = Column(VARCHAR(1200), nullable=True)
+    mod_group = Column(VARCHAR(500), nullable=True)
 
     def __str__(self):
         return self.name
 
     def __init__(self, name: str, group_id: int, image_url: str,
-                 price: float, product_id: str, description: str, weight: float = 0):
+                 price: float, product_id: str, description: str,
+                 mod_group: str, weight: float = 0):
         self.name = name
         self.group = group_id
         self.image = image_url
@@ -67,6 +69,7 @@ class Product(BaseModel):
         self.product_id = product_id
         self.weight = weight
         self.description = description
+        self.mod_group = mod_group
 
 
 class Basket(BaseModel):
