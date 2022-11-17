@@ -39,6 +39,8 @@ def parsing_json(file):
                             for val in value:
                                 tmp[key] = val.get('id')
                                 break
+                            else:
+                                tmp[key] = None
                         else:
                             tmp[key] = value
                 products_dish.append(tmp)

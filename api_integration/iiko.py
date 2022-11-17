@@ -75,7 +75,8 @@ async def get_products(data):
             image_url=product.get("imageLinks", "None"),
             description=product.get("description", None),
             price=product.get("sizePrices", 0),
-            weight=product.get("weight", 0)
+            weight=product.get("weight", 0),
+            mod_group=product.get("groupModifiers", None)
         )
         product_list.append(item)
     session.add_all(product_list)
