@@ -81,7 +81,6 @@ async def get_products(data):
     session.add_all(product_list)
     await session.commit()
     await session.close()
-    await get_modifications(data)
 
 
 async def get_modifications(data):
@@ -90,15 +89,15 @@ async def get_modifications(data):
     session = session_maker()
     mod_list = []
     for mod in market_dict.get("products_modifier"):
-        groups = await get_group_by_id(mod.get("parentGroup"))
-        if not groups:
+        group = await get_group_by_id(mod.get("parentGroup"))
+        if not group:
             continue
         item = Modification(
             mod_id=mod.get("id"),
             name=mod.get("name"),
             price=mod.get("sizePrices", 0),
             weight=mod.get("weight", 0),
-            product_id=groups.id,
+            product_id=group.id,
             mod_type=mod.get("measureUnit", "None"),
         )
         mod_list.append(item)
