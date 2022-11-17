@@ -83,6 +83,9 @@ async def add_basket(call: CallbackQuery):
     mod_id = product.mod_group
     data = await get_modifications_by_mod_id(mod_id)
     mod_keyboard = InlineKeyboardMarkup()
+    instance = data.scalars().first()
+    if instance is None:
+        pass
     for item in data:
         text = item.name.replace("; Т", ", Тонкое тесто").replace("; П", ", Пышное тесто")
         text = f"{text} {int(item.price)} руб"
