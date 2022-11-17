@@ -36,18 +36,9 @@ def parsing_json(file):
                             except IndexError:
                                 tmp[key] = ''
                         elif key == 'groupModifiers':
-                            groupModifiers = []
                             for val in value:
-                                tmp_group = {}
-                                tmp_group['id'] = val.get('id')
-                                childModifiers = []
-                                for val_mod in val.get('childModifiers'):
-                                    tmp_child = {}
-                                    tmp_child['id'] = val_mod.get('id')
-                                    childModifiers.append(tmp_child)
-                                tmp_group['childModifiers'] = childModifiers
-                                groupModifiers.append(tmp_group)
-                            tmp[key] = groupModifiers
+                                tmp[key] = val.get('id')
+                                break
                         else:
                             tmp[key] = value
                 products_dish.append(tmp)
