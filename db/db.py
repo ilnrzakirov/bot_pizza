@@ -100,10 +100,10 @@ class Modification(BaseModel):
         return self.name
 
     def __init__(self, name: str, price: float, mod_id: str,
-                 mod_type: str, product_id: int,  weight: float = 0,):
+                 mod_type: str, group_id: int,  weight: float = 0,):
         self.name = name
         self.price = price
         self.mod_id = mod_id
         self.weight = weight
         self.type = mod_type
-        self.product = product_id
+        self.group = group_id
