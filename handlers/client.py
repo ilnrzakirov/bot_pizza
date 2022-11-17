@@ -8,7 +8,8 @@ from loguru import logger
 import bot
 from keyboards.clients import get_menu_button
 from repositories.groups import get_group_by_id
-from repositories.products import get_product_by_group_id
+from repositories.modification import get_modifications_by_mod_id
+from repositories.products import get_product_by_group_id, get_product_by_iiko_id
 from settings import groups
 
 
@@ -77,7 +78,12 @@ async def get_group_items(call: CallbackQuery):
 
 
 async def add_basket(call: CallbackQuery):
-    print(call.data)
+    product_id = call.data.split()[1]
+    product = await get_product_by_iiko_id(product_id)
+    mod_id = product.mod_group
+    data = await get_modifications_by_mod_id(mod_id)
+    for item in data:
+        print(item)
 
 
 def register_handlers_client(dispatcher: Dispatcher):
