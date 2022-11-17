@@ -21,22 +21,3 @@ async def get_group_by_id(id_in: str) -> Groups | None:
         if id_in in group[0].iiko_id:
             return group[0]
     return None
-
-
-async def get_products_list() -> list[Product]:
-    logger.info("Запрос на выдачу списка продуктов")
-    session = session_maker()
-    product_list = await session.execute(select(Product))
-    await session.close()
-    return product_list
-
-
-async def get_product_by_id(id_in: str) -> Product | None:
-    logger.info(f"Запрос на выдачу продукта по id {id_in}")
-    session = session_maker()
-    products = await get_products_list()
-    await session.close()
-    for product in products:
-        if id_in == product[0].product_id:
-            return product[0]
-    return None

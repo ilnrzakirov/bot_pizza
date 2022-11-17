@@ -2,7 +2,6 @@ import sqlalchemy
 
 from db.db import Product, Modification
 from settings import session_maker
-from sqlalchemy import select
 
 
 async def get_modifications_by_product_id(product: Product) -> list[Modification]:

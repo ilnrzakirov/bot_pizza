@@ -4,7 +4,7 @@ import requests
 from loguru import logger
 
 from db.db import Groups, Product, Modification
-from repositories.groups import get_groups_list, get_group_by_id, get_product_by_id
+from repositories.groups import get_groups_list, get_group_by_id
 from repositories.products import delete_all_products
 from settings import API_LOGIN, ORG_ID, session_maker, groups, URL
 from utils.parsing import parsing_json
@@ -90,15 +90,15 @@ async def get_modifications(data):
     session = session_maker()
     mod_list = []
     for mod in market_dict.get("products_modifier"):
-        product = await get_product_by_id(mod.get("parentGroup"))
-        if not product:
+        groups = await get_group_by_id(mod.get("parentGroup"))
+        if not groups:
             continue
         item = Modification(
             mod_id=mod.get("id"),
             name=mod.get("name"),
             price=mod.get("sizePrices", 0),
             weight=mod.get("weight", 0),
-            product_id=product.id,
+            product_id=groups.id,
             mod_type=mod.get("measureUnit", "None"),
         )
         mod_list.append(item)
