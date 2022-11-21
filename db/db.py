@@ -82,13 +82,15 @@ class Basket(BaseModel):
     products = relationship("Product", secondary="association")
     modifications = relationship("Modification", secondary="association")
     count = Column(Integer, nullable=False, default=0)
-    price = Column(Integer, nullable=False, default=0)
+    price = Column(sqlalchemy.types.Float, nullable=False, default=0)
 
     def __str__(self):
         return self.id
 
-    def __init__(self, chat_id: int):
+    def __init__(self, chat_id: int, count: int, price: float):
         self.chat_id = chat_id
+        self.count = count
+        self.price = price
 
 
 class Modification(BaseModel):
