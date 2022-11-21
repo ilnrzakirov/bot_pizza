@@ -2,7 +2,8 @@ import sqlalchemy
 from sqlalchemy import (
     VARCHAR,
     Column,
-    Integer, ForeignKey, FLOAT, DECIMAL
+    Integer,
+    ForeignKey
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -79,6 +80,9 @@ class Basket(BaseModel):
     id = Column(Integer, primary_key=True)
     chat_id = Column(Integer, nullable=False)
     products = relationship("Product", secondary="association")
+    modifications = relationship("Modification", secondary="association")
+    count = Column(Integer, nullable=False, default=0)
+    price = Column(Integer, nullable=False, default=0)
 
     def __str__(self):
         return self.id

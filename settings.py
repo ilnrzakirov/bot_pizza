@@ -10,7 +10,7 @@ BOT_TOKEN = config("BOT_TOKEN")
 postgres_url = URL.create(
     "postgresql+asyncpg",
     username="postgres",
-    password="postgres",
+    password="2269",
     port=5432,
     database="postgres",
     host="localhost",
