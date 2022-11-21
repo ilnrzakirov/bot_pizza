@@ -1,8 +1,8 @@
 """
 
-Revision ID: e734f6a936a3
+Revision ID: 7404443b3584
 Revises: 
-Create Date: 2022-11-17 18:17:18.851844
+Create Date: 2022-11-21 22:43:02.164928
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e734f6a936a3'
+revision = '7404443b3584'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,6 +21,8 @@ def upgrade() -> None:
     op.create_table('baskets',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('chat_id', sa.Integer(), nullable=False),
+    sa.Column('count', sa.Integer(), nullable=False),
+    sa.Column('price', sa.Float(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('groups',
@@ -48,6 +50,7 @@ def upgrade() -> None:
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('weight', sa.Float(), nullable=True),
     sa.Column('description', sa.VARCHAR(length=1200), nullable=True),
+    sa.Column('mod_group', sa.VARCHAR(length=500), nullable=True),
     sa.ForeignKeyConstraint(['group'], ['groups.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
