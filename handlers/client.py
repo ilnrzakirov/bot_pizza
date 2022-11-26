@@ -16,6 +16,7 @@ from settings import groups
 async def menu(message: types.Message):
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
     keyboard = await get_menu_button()
+    await message.delete()
     await message.answer("🍽  Главное меню", reply_markup=keyboard)
 
 
@@ -65,6 +66,7 @@ async def get_group_items(call: CallbackQuery):
                                                    f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
     try:
         if len(call.data.split()) == 1:
+            await call.message.delete()
             await bot.bot.send_photo(chat_id=call.message.chat.id, photo=products[pos].image, reply_markup=keyboard,
                                      caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
                                              f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
@@ -91,7 +93,6 @@ async def add_basket(call: CallbackQuery):
     chat = call.from_user.id
     await call.message.delete()
     await bot.bot.send_message(chat_id=chat, text="Выбери размер", reply_markup=mod_keyboard)
-
 
 
 def register_handlers_client(dispatcher: Dispatcher):

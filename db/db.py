@@ -73,6 +73,13 @@ class Product(BaseModel):
         self.mod_group = mod_group
 
 
+association_mod_basket = sqlalchemy.Table(
+    "association_mod_basket", BaseModel.metadata,
+    Column("baskets_id", ForeignKey("baskets.id")),
+    Column("modifications_id", ForeignKey("modifications.id")),
+)
+
+
 class Basket(BaseModel):
 
     __tablename__ = "baskets"
@@ -80,7 +87,7 @@ class Basket(BaseModel):
     id = Column(Integer, primary_key=True)
     chat_id = Column(Integer, nullable=False)
     products = relationship("Product", secondary="association")
-    modifications = relationship("Modification", secondary="association")
+    modifications = relationship("Modification", secondary="association_mod_basket")
     count = Column(Integer, nullable=False, default=0)
     price = Column(sqlalchemy.types.Float, nullable=False, default=0)
 
