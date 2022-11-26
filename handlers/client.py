@@ -55,7 +55,7 @@ async def get_group_items(call: CallbackQuery):
     pos = 0
     if len(call.data.split()) != 1:
         pos = int(call.data.split()[1])
-    add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}")
+    add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}",)
     next = InlineKeyboardButton("➡", callback_data=f"{group_name} {pos + 1}")
     prev = InlineKeyboardButton("⬅", callback_data=f"{group_name} {pos - 1 if pos > 0 else 0}")
     navigate = InlineKeyboardButton(f"{pos + 1}/{len(products)}", callback_data=call.data)
@@ -84,15 +84,18 @@ async def add_basket(call: CallbackQuery):
     product = await get_product_by_iiko_id(product_id)
     mod_id = product.mod_group
     data = await get_modifications_by_mod_id(mod_id)
-    mod_keyboard = InlineKeyboardMarkup()
-    for item in data:
-        text = item.name.replace("; Т", ", Тонкое тесто").replace("; П", ", Пышное тесто")
-        text = f"{text} {int(item.price)} руб"
-        button = InlineKeyboardButton(text=text, callback_data=f"{item.mod_id}")
-        mod_keyboard.add(button)
-    chat = call.from_user.id
-    await call.message.delete()
-    await bot.bot.send_message(chat_id=chat, text="Выбери размер", reply_markup=mod_keyboard)
+    if data:
+        mod_keyboard = InlineKeyboardMarkup()
+        for item in data:
+            text = item.name.replace("; Т", ", Тонкое тесто").replace("; П", ", Пышное тесто")
+            text = f"{text} {int(item.price)} руб"
+            button = InlineKeyboardButton(text=text, callback_data=f"{item.mod_id}")
+            mod_keyboard.add(button)
+        chat = call.from_user.id
+        await call.message.delete()
+        await bot.bot.send_message(chat_id=chat, text="Выбери размер", reply_markup=mod_keyboard)
+    else:
+        await call.message.answer("Добавлен в корзину")
 
 
 def register_handlers_client(dispatcher: Dispatcher):
