@@ -59,8 +59,9 @@ async def get_group_items(call: CallbackQuery):
     next = InlineKeyboardButton("➡", callback_data=f"{group_name} {pos + 1}")
     prev = InlineKeyboardButton("⬅", callback_data=f"{group_name} {pos - 1 if pos > 0 else 0}")
     navigate = InlineKeyboardButton(f"{pos + 1}/{len(products)}", callback_data=call.data)
+    list_button = InlineKeyboardButton("Списком", callback_data=f"list {group_name}")
     keyboard.add(add)
-    keyboard.row(prev, next)
+    keyboard.row(prev, list_button,  next)
     keyboard.add(navigate)
     file = InputMedia(media=products[pos].image, caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
                                                    f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
@@ -98,6 +99,20 @@ async def add_basket(call: CallbackQuery):
         await call.message.answer("Добавлен в корзину")
 
 
+async def list_view(call: CallbackQuery):
+    group_name = call.data.split()[1]
+    groups_id = groups[group_name]
+    group = await get_group_by_id(groups_id)
+    products = await get_product_by_group_id(group)
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    items_list = []
+    for item in products:
+        items_list.append(InlineKeyboardButton(item.name, callback_data=f"add {item.product_id}"))
+    keyboard.add(*items_list)
+    await call.message.delete()
+    await call.message.answer("Выбери: ", reply_markup=keyboard)
+
+
 def register_handlers_client(dispatcher: Dispatcher):
     dispatcher.register_message_handler(menu, text="🍽 Меню", content_types=ContentType.TEXT)
     dispatcher.register_message_handler(delevery, text="🚚 О доставке PizzaHouse", content_types=ContentType.TEXT)
@@ -107,4 +122,5 @@ def register_handlers_client(dispatcher: Dispatcher):
     dispatcher.register_message_handler(help_menu, text="⚙ Помощь", content_types=ContentType.TEXT)
     dispatcher.register_callback_query_handler(get_group_items, lambda call: call.data.split(" ")[0] in groups.keys(),)
     dispatcher.register_callback_query_handler(add_basket, lambda call: call.data.startswith("add"),)
+    dispatcher.register_callback_query_handler(list_view, lambda call: call.data.startswith("list"),)
 
