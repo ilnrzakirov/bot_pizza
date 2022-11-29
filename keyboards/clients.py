@@ -1,6 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from loguru import logger
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from db.db import Basket
 from repositories.groups import get_groups_list
@@ -52,7 +53,7 @@ async def get_basket(chat_id: str, session_in=None):
         session = session_in
     else:
         session = session_maker()
-    query = select(Basket).where(Basket.chat_id == int(chat_id))
+    query = select(Basket).where(Basket.chat_id == int(chat_id)).options(selectinload(Basket.products))
     basket = await session.execute(query)
     if session_in is None:
         await session.close()

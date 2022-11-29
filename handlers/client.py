@@ -111,8 +111,8 @@ async def add_basket(call: CallbackQuery):
         basket_prod = BasketMod(
             products=[product]
         )
+        basket[0].products.append(basket_prod)
         session.add(basket_prod)
-        await basket[0].products.append(basket_prod)
         await session.commit()
         await session.close()
         await call.message.answer("Добавлен в корзину")
