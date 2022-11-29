@@ -4,13 +4,15 @@ from aiogram.types import ContentType, CallbackQuery, InlineKeyboardMarkup, Inli
     InputMediaPhoto
 from aiogram.utils.exceptions import BadRequest
 from loguru import logger
+from sqlalchemy import select
 
 import bot
-from keyboards.clients import get_menu_button
+from db.db import Basket, Product, BasketMod
+from keyboards.clients import get_menu_button, get_basket
 from repositories.groups import get_group_by_id
 from repositories.modification import get_modifications_by_mod_id
 from repositories.products import get_product_by_group_id, get_product_by_iiko_id
-from settings import groups
+from settings import groups, session_maker
 
 
 async def menu(message: types.Message):
@@ -55,16 +57,16 @@ async def get_group_items(call: CallbackQuery):
     pos = 0
     if len(call.data.split()) != 1:
         pos = int(call.data.split()[1])
-    add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}",)
+    add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}", )
     next = InlineKeyboardButton("➡", callback_data=f"{group_name} {pos + 1}")
     prev = InlineKeyboardButton("⬅", callback_data=f"{group_name} {pos - 1 if pos > 0 else 0}")
     navigate = InlineKeyboardButton(f"{pos + 1}/{len(products)}", callback_data=call.data)
     list_button = InlineKeyboardButton("Списком", callback_data=f"list {group_name}")
     keyboard.add(add)
-    keyboard.row(prev, list_button,  next)
+    keyboard.row(prev, list_button, next)
     keyboard.add(navigate)
     file = InputMedia(media=products[pos].image, caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
-                                                   f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
+                                                         f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
     try:
         if len(call.data.split()) == 1:
             await call.message.delete()
@@ -74,28 +76,45 @@ async def get_group_items(call: CallbackQuery):
         else:
             await call.message.edit_media(media=file, reply_markup=keyboard)
     except BadRequest:
-        file = InputMedia(media="https://prikolnye-kartinki.ru/img/picture/Sep/23/9d857169c84422fdaa28df62667a1467/5.jpg",
-                          caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
-                                               f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
+        file = InputMedia(
+            media="https://prikolnye-kartinki.ru/img/picture/Sep/23/9d857169c84422fdaa28df62667a1467/5.jpg",
+            caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
+                    f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
         await call.message.edit_media(media=file, reply_markup=keyboard)
 
 
 async def add_basket(call: CallbackQuery):
+    session = session_maker()
     product_id = call.data.split()[1]
-    product = await get_product_by_iiko_id(product_id)
+    product = await get_product_by_iiko_id(product_id, session)
     mod_id = product.mod_group
-    data = await get_modifications_by_mod_id(mod_id)
+    data = await get_modifications_by_mod_id(mod_id, session)
+    if basket := await get_basket(call.from_user.id, session):
+        logger.info("Корзина получена")
+    else:
+        basket = Basket(
+            chat_id=int(call.from_user.id),
+        )
+        session.add(basket)
+        await session.commit()
     if data:
         mod_keyboard = InlineKeyboardMarkup()
         for item in data:
             text = item.name.replace("; Т", ", Тонкое тесто").replace("; П", ", Пышное тесто")
             text = f"{text} {int(item.price)} руб"
-            button = InlineKeyboardButton(text=text, callback_data=f"{item.mod_id}")
+            button = InlineKeyboardButton(text=text, callback_data=f"mod {item.mod_id}")
             mod_keyboard.add(button)
         chat = call.from_user.id
         await call.message.delete()
         await bot.bot.send_message(chat_id=chat, text="Выбери размер", reply_markup=mod_keyboard)
     else:
+        basket_prod = BasketMod(
+            products=[product]
+        )
+        session.add(basket_prod)
+        await basket[0].products.append(basket_prod)
+        await session.commit()
+        await session.close()
         await call.message.answer("Добавлен в корзину")
 
 
@@ -121,22 +140,22 @@ async def detail_view(call: CallbackQuery):
     groups_id = groups[group_name]
     group = await get_group_by_id(groups_id)
     products = await get_product_by_group_id(group)
-    add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}",)
+    add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}", )
     next = InlineKeyboardButton("➡", callback_data=f"{group_name} {pos + 1}")
     prev = InlineKeyboardButton("⬅", callback_data=f"{group_name} {pos - 1 if pos > 0 else 0}")
     navigate = InlineKeyboardButton(f"{pos + 1}/{len(products)}", callback_data=call.data)
     list_button = InlineKeyboardButton("Списком", callback_data=f"list {group_name}")
     keyboard = InlineKeyboardMarkup()
     keyboard.add(add)
-    keyboard.row(prev, list_button,  next)
+    keyboard.row(prev, list_button, next)
     keyboard.add(navigate)
     file = InputMedia(media=products[pos].image, caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
-                                                   f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
+                                                         f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
 
     await call.message.delete()
     await bot.bot.send_photo(chat_id=call.message.chat.id, photo=products[pos].image, reply_markup=keyboard,
-                            caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
-                                    f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
+                             caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
+                                     f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
 
 
 def register_handlers_client(dispatcher: Dispatcher):
@@ -146,8 +165,7 @@ def register_handlers_client(dispatcher: Dispatcher):
     dispatcher.register_message_handler(basket, text="🛒 Корзина", content_types=ContentType.TEXT)
     dispatcher.register_message_handler(locations, text="📍 Как нас найти", content_types=ContentType.TEXT)
     dispatcher.register_message_handler(help_menu, text="⚙ Помощь", content_types=ContentType.TEXT)
-    dispatcher.register_callback_query_handler(get_group_items, lambda call: call.data.split(" ")[0] in groups.keys(),)
-    dispatcher.register_callback_query_handler(add_basket, lambda call: call.data.startswith("add"),)
-    dispatcher.register_callback_query_handler(list_view, lambda call: call.data.startswith("list"),)
-    dispatcher.register_callback_query_handler(detail_view, lambda call: call.data.startswith("view"),)
-
+    dispatcher.register_callback_query_handler(get_group_items, lambda call: call.data.split(" ")[0] in groups.keys(), )
+    dispatcher.register_callback_query_handler(add_basket, lambda call: call.data.startswith("add"), )
+    dispatcher.register_callback_query_handler(list_view, lambda call: call.data.startswith("list"), )
+    dispatcher.register_callback_query_handler(detail_view, lambda call: call.data.startswith("view"), )

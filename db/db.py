@@ -75,9 +75,29 @@ class Product(BaseModel):
 
 association_mod_basket = sqlalchemy.Table(
     "association_mod_basket", BaseModel.metadata,
-    Column("baskets_id", ForeignKey("baskets.id")),
+    Column("baskets_id", ForeignKey("basket_mod.id")),
     Column("modifications_id", ForeignKey("modifications.id")),
 )
+
+association_prod_basket = sqlalchemy.Table(
+    "association_prod_basket", BaseModel.metadata,
+    Column("baskets_id", ForeignKey("basket_mod.id")),
+    Column("product_id", ForeignKey("products.id")),
+)
+
+basket_mod_association = sqlalchemy.Table(
+    "basket_mod_association", BaseModel.metadata,
+    Column("baskets_id", ForeignKey("baskets.id")),
+    Column("baskets_mod_id", ForeignKey("basket_mod.id")),
+)
+
+
+class BasketMod(BaseModel):
+    __tablename__ = "basket_mod"
+
+    id = Column(Integer, primary_key=True)
+    products = relationship("Product", secondary="association_prod_basket")
+    modifications = relationship("Modification", secondary="association_mod_basket")
 
 
 class Basket(BaseModel):
@@ -86,15 +106,16 @@ class Basket(BaseModel):
 
     id = Column(Integer, primary_key=True)
     chat_id = Column(Integer, nullable=False)
-    products = relationship("Product", secondary="association")
-    modifications = relationship("Modification", secondary="association_mod_basket")
+    # products = relationship("Product", secondary="association")
+    # modifications = relationship("Modification", secondary="association_mod_basket")
+    products = relationship("BasketMod", secondary="basket_mod_association")
     count = Column(Integer, nullable=False, default=0)
     price = Column(sqlalchemy.types.Float, nullable=False, default=0)
 
     def __str__(self):
         return self.id
 
-    def __init__(self, chat_id: int, count: int, price: float):
+    def __init__(self, chat_id: int, count: int = 0, price: float = 0):
         self.chat_id = chat_id
         self.count = count
         self.price = price

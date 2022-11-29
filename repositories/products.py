@@ -16,12 +16,16 @@ async def get_product_by_group_id(group: Groups) -> list[Product]:
     return product_list
 
 
-async def get_product_by_iiko_id(iiko_id: str):
-    session = session_maker()
+async def get_product_by_iiko_id(iiko_id: str, session_in=None):
+    if session_in:
+        session = session_in
+    else:
+        session = session_maker()
     query = sqlalchemy.select(Product).where(Product.product_id == iiko_id)
     product = await session.execute(query)
     instance = product.scalars().first()
-    await session.close()
+    if session_in is None:
+        await session.close()
     if not instance:
         return None
     return instance

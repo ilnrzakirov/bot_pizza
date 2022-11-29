@@ -1,6 +1,10 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+from loguru import logger
+from sqlalchemy import select
 
+from db.db import Basket
 from repositories.groups import get_groups_list
+from settings import session_maker
 
 delivery = KeyboardButton("🚚 О доставке PizzaHouse")
 menu = KeyboardButton("🍽 Меню")
@@ -40,3 +44,16 @@ async def get_menu_button():
         menu_items.append(InlineKeyboardButton(name, callback_data=f"{item[0].name}"))
     menu_inline.add(*menu_items)
     return menu_inline
+
+
+async def get_basket(chat_id: str, session_in=None):
+    logger.info(f"Запрос на выдачу корзины по id {chat_id}")
+    if session_in:
+        session = session_in
+    else:
+        session = session_maker()
+    query = select(Basket).where(Basket.chat_id == int(chat_id))
+    basket = await session.execute(query)
+    if session_in is None:
+        await session.close()
+    return basket.first()
