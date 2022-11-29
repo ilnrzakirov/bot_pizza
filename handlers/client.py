@@ -5,6 +5,7 @@ from aiogram.types import ContentType, CallbackQuery, InlineKeyboardMarkup, Inli
 from aiogram.utils.exceptions import BadRequest
 from loguru import logger
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 import bot
 from db.db import Basket, Product, BasketMod
@@ -48,16 +49,25 @@ async def help_menu(message: types.Message):
 
 
 async def get_group_items(call: CallbackQuery):
+    session = session_maker()
     logger.info(f"Получена команда {call.data} от {call.from_user.username} - id {call.from_user.id}")
     group_name = call.data.split()[0]
     groups_id = groups[group_name]
-    group = await get_group_by_id(groups_id)
-    products = await get_product_by_group_id(group)
+    group = await get_group_by_id(groups_id, session)
+    products = await get_product_by_group_id(group, session)
     keyboard = InlineKeyboardMarkup()
     pos = 0
     if len(call.data.split()) != 1:
         pos = int(call.data.split()[1])
-    add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}", )
+    if basket := await get_basket(call.from_user.id, session):
+        price = 0
+        prod = 0
+        for prod in basket[0].products:
+            pass
+            # price += prod.products.price
+        add = InlineKeyboardButton(f"Добавить в корзину {price}руб", callback_data=f"add {products[pos].product_id}",)
+    else:
+        add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}", )
     next = InlineKeyboardButton("➡", callback_data=f"{group_name} {pos + 1}")
     prev = InlineKeyboardButton("⬅", callback_data=f"{group_name} {pos - 1 if pos > 0 else 0}")
     navigate = InlineKeyboardButton(f"{pos + 1}/{len(products)}", callback_data=call.data)

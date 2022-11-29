@@ -3,7 +3,7 @@ from loguru import logger
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from db.db import Basket
+from db.db import Basket, BasketMod, Product, association_prod_basket
 from repositories.groups import get_groups_list
 from settings import session_maker
 
