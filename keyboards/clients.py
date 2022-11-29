@@ -58,3 +58,15 @@ async def get_basket(chat_id: str, session_in=None):
     if session_in is None:
         await session.close()
     return basket.first()
+
+
+async def get_basket_item(item_id, session_in=None):
+    if session_in:
+        session = session_in
+    else:
+        session = session_maker()
+    query = select(BasketMod).where(BasketMod.id == item_id).options(selectinload(BasketMod.products))
+    item = await session.execute(query)
+    if session_in is None:
+        await session.close()
+    return item

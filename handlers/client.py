@@ -9,7 +9,7 @@ from sqlalchemy.orm import selectinload
 
 import bot
 from db.db import Basket, Product, BasketMod
-from keyboards.clients import get_menu_button, get_basket
+from keyboards.clients import get_menu_button, get_basket, get_basket_item
 from repositories.groups import get_group_by_id
 from repositories.modification import get_modifications_by_mod_id
 from repositories.products import get_product_by_group_id, get_product_by_iiko_id
@@ -61,11 +61,13 @@ async def get_group_items(call: CallbackQuery):
         pos = int(call.data.split()[1])
     if basket := await get_basket(call.from_user.id, session):
         price = 0
-        prod = 0
+        count = 0
         for prod in basket[0].products:
-            pass
-            # price += prod.products.price
-        add = InlineKeyboardButton(f"Добавить в корзину {price}руб", callback_data=f"add {products[pos].product_id}",)
+            items = await get_basket_item(prod.id)
+            for product in items:
+                count += 1
+                price += int(product[0].products[0].price)
+        add = InlineKeyboardButton(f"Добавить в корзину {count}/{price}руб", callback_data=f"add {products[pos].product_id}",)
     else:
         add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}", )
     next = InlineKeyboardButton("➡", callback_data=f"{group_name} {pos + 1}")

@@ -17,7 +17,7 @@ def parsing_json(file):
     products_dish = []
     products_modifier = []
     dish = (
-        'id', 'groupId', 'productCategoryId', 'name', 'sizePrice', 'weight',
+        'id', 'groupId', 'productCategoryId', 'name', 'sizePrices', 'weight',
         'groupModifiers', 'imageLinks', 'description', 'parentGroup'
     )
     modifier = ('id', 'groupId', 'productCategoryId', 'name', 'sizePrices', 'weight', 'parentGroup', 'measureUnit')
