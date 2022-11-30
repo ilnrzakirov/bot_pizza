@@ -62,11 +62,13 @@ async def get_group_items(call: CallbackQuery):
     price = 0
     count = 0
     if basket := await get_basket(call.from_user.id, session):
+        logger.info("Корзина получена")
         for prod in basket[0].products:
             items = await get_basket_item(prod.id)
             for product in items:
                 count += 1
                 price += int(product[0].products[0].price)
+    logger.info(f"Состояние корзины count {count}, price {price}")
     add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}", )
     next = InlineKeyboardButton("➡", callback_data=f"{group_name} {pos + 1}")
     prev = InlineKeyboardButton("⬅", callback_data=f"{group_name} {pos - 1 if pos > 0 else 0}")
@@ -81,13 +83,16 @@ async def get_group_items(call: CallbackQuery):
                                                          f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
     try:
         if len(call.data.split()) == 1:
+            logger.info("Первый показ карточек товаров")
             await call.message.delete()
             await bot.bot.send_photo(chat_id=call.message.chat.id, photo=products[pos].image, reply_markup=keyboard,
                                      caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
                                              f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
         else:
+            logger.info("Обновляем карточку товара")
             await call.message.edit_media(media=file, reply_markup=keyboard)
     except BadRequest:
+        logger.info("Фото товара не найдеа, подкладываем заглушку")
         file = InputMedia(
             media="https://prikolnye-kartinki.ru/img/picture/Sep/23/9d857169c84422fdaa28df62667a1467/5.jpg",
             caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
