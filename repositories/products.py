@@ -1,6 +1,6 @@
 import sqlalchemy
 
-from db.db import Product, Groups
+from db.db import Product, Groups, Modification
 from settings import session_maker
 from sqlalchemy import select
 
@@ -38,6 +38,14 @@ async def get_product_by_iiko_id(iiko_id: str, session_in=None):
 async def delete_all_products():
     session = session_maker()
     query = sqlalchemy.delete(Product)
+    await session.execute(query)
+    await session.commit()
+    await session.close()
+
+
+async def delete_all_mod():
+    session = session_maker()
+    query = sqlalchemy.delete(Modification)
     await session.execute(query)
     await session.commit()
     await session.close()

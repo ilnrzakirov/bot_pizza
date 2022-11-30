@@ -5,7 +5,7 @@ from loguru import logger
 
 from db.db import Groups, Product, Modification
 from repositories.groups import get_groups_list, get_group_by_id
-from repositories.products import delete_all_products
+from repositories.products import delete_all_products, delete_all_mod
 from settings import API_LOGIN, ORG_ID, session_maker, groups, URL
 from utils.parsing import parsing_json
 
@@ -89,6 +89,7 @@ async def get_modifications(data):
     market_dict = parsing_json(data)
     session = session_maker()
     mod_list = []
+    await delete_all_mod()
     for mod in market_dict.get("products_modifier"):
         item = Modification(
             mod_id=mod.get("id"),
