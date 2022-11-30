@@ -98,7 +98,15 @@ async def get_group_items(call: CallbackQuery):
             media="https://prikolnye-kartinki.ru/img/picture/Sep/23/9d857169c84422fdaa28df62667a1467/5.jpg",
             caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
                     f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
-        await call.message.edit_media(media=file, reply_markup=keyboard)
+        try:
+            await call.message.edit_media(media=file, reply_markup=keyboard)
+        except aiogram.utils.exceptions.MessageToEditNotFound:
+            logger.info("Нечего редактировать")
+            url = "https://prikolnye-kartinki.ru/img/picture/Sep/23/9d857169c84422fdaa28df62667a1467/5.jpg"
+            await bot.bot.send_photo(chat_id=call.message.chat.id, photo=url, reply_markup=keyboard,
+                                     caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
+                                             f"Вес: {products[pos].weight}\nЦена: {products[pos].price}",
+                                     )
 
 
 async def add_basket(call: CallbackQuery):
