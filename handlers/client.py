@@ -79,6 +79,7 @@ async def get_group_items(call: CallbackQuery):
     keyboard.row(prev, list_button, next)
     keyboard.add(navigate)
     keyboard.add(basket_stat)
+    await session.close()
     file = InputMedia(media=products[pos].image, caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
                                                          f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
     try:
