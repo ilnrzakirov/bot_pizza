@@ -55,6 +55,7 @@ async def set_groups():
             new = Groups(name=key, iiko_id=value)
             session.add(new)
             await session.commit()
+            await session.close()
         is_set = False
 
 
