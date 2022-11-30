@@ -59,24 +59,24 @@ async def get_group_items(call: CallbackQuery):
     pos = 0
     if len(call.data.split()) != 1:
         pos = int(call.data.split()[1])
+    price = 0
+    count = 0
     if basket := await get_basket(call.from_user.id, session):
-        price = 0
-        count = 0
         for prod in basket[0].products:
             items = await get_basket_item(prod.id)
             for product in items:
                 count += 1
                 price += int(product[0].products[0].price)
-        add = InlineKeyboardButton(f"Добавить в корзину {count}/{price}руб", callback_data=f"add {products[pos].product_id}",)
-    else:
-        add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}", )
+    add = InlineKeyboardButton("Добавить в корзину", callback_data=f"add {products[pos].product_id}", )
     next = InlineKeyboardButton("➡", callback_data=f"{group_name} {pos + 1}")
     prev = InlineKeyboardButton("⬅", callback_data=f"{group_name} {pos - 1 if pos > 0 else 0}")
+    basket_stat = InlineKeyboardButton(f"Корзина: {count} шт. | {price}руб.", callback_data=" ")
     navigate = InlineKeyboardButton(f"{pos + 1}/{len(products)}", callback_data=call.data)
-    list_button = InlineKeyboardButton("Списком", callback_data=f"list {group_name}")
+    list_button = InlineKeyboardButton("Списком", callback_data=f"list {group_name}",)
     keyboard.add(add)
     keyboard.row(prev, list_button, next)
     keyboard.add(navigate)
+    keyboard.add(basket_stat)
     file = InputMedia(media=products[pos].image, caption=f"{products[pos].name}\nСостав: {products[pos].description}\n"
                                                          f"Вес: {products[pos].weight}\nЦена: {products[pos].price}")
     try:
