@@ -108,7 +108,7 @@ class Basket(BaseModel):
     chat_id = Column(Integer, nullable=False)
     # products = relationship("Product", secondary="association")
     # modifications = relationship("Modification", secondary="association_mod_basket")
-    products = relationship("BasketMod", secondary="basket_mod_association")
+    products = relationship("BasketMod", secondary="basket_mod_association", cascade="all,delete")
     count = Column(Integer, nullable=False, default=0)
     price = Column(sqlalchemy.types.Float, nullable=False, default=0)
 
