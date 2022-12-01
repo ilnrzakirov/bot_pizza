@@ -56,3 +56,15 @@ async def delete_all_mod():
     await session.execute(query)
     await session.commit()
     await session.close()
+
+
+async def get_product_by_id(id_in, session_in=None):
+    if session_in:
+        session = session_in
+    else:
+        session = session_maker()
+    query = sqlalchemy.select(Product).where(Product.product_id == id_in)
+    product = await session.execute(query)
+    if session_in is None:
+        await session.close()
+    return product.scalar()
