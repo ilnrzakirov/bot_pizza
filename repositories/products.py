@@ -43,6 +43,13 @@ async def delete_all_products():
     await session.close()
 
 
+async def delete_product_by_id(id_in):
+    session = session_maker()
+    query = sqlalchemy.delete(Product).where(Product.product_id == id_in)
+    await session.execute(query)
+    await session.commit()
+    await session.close()
+
 async def delete_all_mod():
     session = session_maker()
     query = sqlalchemy.delete(Modification)

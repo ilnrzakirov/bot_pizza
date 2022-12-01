@@ -59,7 +59,6 @@ async def set_groups():
     await session.close()
 
 
-
 async def get_products(data):
     logger.info("Собираем продукты")
     market_dict = parsing_json(data)
