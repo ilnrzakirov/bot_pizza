@@ -66,7 +66,6 @@ async def get_products(data):
     product_list = []
     for product in market_dict.get("products_dish"):
         group = await get_group_by_id(product.get("parentGroup"))
-        # await delete_all_products()
         prod = await get_product_by_id(product.get("id"))
         if not group:
             continue
