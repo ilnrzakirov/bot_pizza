@@ -42,6 +42,7 @@ async def get_menu(token: str):
 
 
 async def set_groups():
+    session = session_maker()
     is_set = False
     logger.info("Собираем группы")
     group_list = await get_groups_list()
@@ -51,12 +52,12 @@ async def set_groups():
                 is_set = True
                 break
         if not is_set:
-            session = session_maker()
             new = Groups(name=key, iiko_id=value)
             session.add(new)
-            await session.commit()
-            await session.close()
         is_set = False
+    await session.commit()
+    await session.close()
+
 
 
 async def get_products(data):
