@@ -5,7 +5,7 @@ from loguru import logger
 
 from db.db import Groups, Product, Modification
 from repositories.groups import get_groups_list, get_group_by_id
-from repositories.products import delete_all_products, delete_all_mod, get_product_by_id
+from repositories.products import delete_all_products, delete_all_mod, get_product_by_id, get_mod_by_id
 from settings import API_LOGIN, ORG_ID, session_maker, groups, URL
 from utils.parsing import parsing_json
 
@@ -66,7 +66,7 @@ async def get_products(data):
     product_list = []
     for product in market_dict.get("products_dish"):
         group = await get_group_by_id(product.get("parentGroup"))
-        prod = await get_product_by_id(product.get("id"))
+        prod = await get_product_by_id(product.get("id"), session)
         if not group:
             continue
         if not prod:
@@ -98,17 +98,23 @@ async def get_modifications(data):
     market_dict = parsing_json(data)
     session = session_maker()
     mod_list = []
-    await delete_all_mod()
     for mod in market_dict.get("products_modifier"):
-        item = Modification(
-            mod_id=mod.get("id"),
-            name=mod.get("name"),
-            price=mod.get("sizePrices", 0),
-            weight=mod.get("weight", 0),
-            group_id=mod.get("parentGroup", "None"),
-            mod_type=mod.get("measureUnit", "None"),
-        )
-        mod_list.append(item)
+        modificate = await get_mod_by_id(mod.get("id"), session)
+        if not modificate:
+            item = Modification(
+                mod_id=mod.get("id"),
+                name=mod.get("name"),
+                price=mod.get("sizePrices", 0),
+                weight=mod.get("weight", 0),
+                group_id=mod.get("parentGroup", "None"),
+                mod_type=mod.get("measureUnit", "None"),
+            )
+            mod_list.append(item)
+        else:
+            modificate.name=mod.get("name")
+            modificate.price=mod.get("sizePrices", 0)
+            modificate.weight=mod.get("weight", 0)
+            mod_list.append(modificate)
     session.add_all(mod_list)
     await session.commit()
     await session.close()
