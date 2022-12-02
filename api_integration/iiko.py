@@ -94,6 +94,11 @@ async def get_products(data):
 
 
 async def get_modifications(data):
+    """
+        Парсинг и запсь в БД модификаций
+    :param data: json
+    :return: None
+    """
     logger.info("Собираем модификаторы")
     market_dict = parsing_json(data)
     session = session_maker()
