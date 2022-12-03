@@ -60,6 +60,11 @@ async def set_groups():
 
 
 async def get_products(data):
+    """
+        Парсит и записывает в БД продукты
+    :param data: json
+    :return: None
+    """
     logger.info("Собираем продукты")
     market_dict = parsing_json(data)
     session = session_maker()
