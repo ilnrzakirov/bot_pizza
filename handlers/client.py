@@ -17,6 +17,11 @@ from settings import groups, session_maker
 
 
 async def menu(message: types.Message):
+    """
+        Хендлер показывает меню
+    :param message: commands
+    :return: None
+    """
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
     keyboard = await get_menu_button()
     await message.delete()
