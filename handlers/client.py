@@ -29,6 +29,11 @@ async def menu(message: types.Message):
 
 
 async def delevery(message: types.Message):
+    """
+        Хендлер показывает корзину
+    :param message: commands
+    :return: None
+    """
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
     await message.answer("Что то есть")
 
