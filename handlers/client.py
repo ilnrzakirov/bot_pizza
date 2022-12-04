@@ -40,7 +40,7 @@ async def delevery(message: types.Message):
 
 async def stocks(message: types.Message):
     """
-        Хендлер
+        Хендлер показывает действующие акции
     :param message:
     :return:
     """
