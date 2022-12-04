@@ -49,6 +49,13 @@ async def help_menu(message: types.Message):
 
 
 async def get_group_items(call: CallbackQuery):
+    """
+        Хендлер показывает карточки товаров, основная логика происходит в этом хендлере
+        Выдает клавиатуру с кнопками вперед назад добавить в коризну и просмотор группы
+        списокм
+    :param call: CallbackQuery (id группы)
+    :return: None
+    """
     session = session_maker()
     logger.info(f"Получена команда {call.data} от {call.from_user.username} - id {call.from_user.id}")
     group_name = call.data.split()[0]
