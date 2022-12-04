@@ -161,6 +161,11 @@ async def list_view(call: CallbackQuery):
 
 
 async def detail_view(call: CallbackQuery):
+    """
+        Показ карточки товара при выборе со списка товаров
+    :param call: CallbackQuery
+    :return: None
+    """
     group_name = call.data.split()[1]
     pos = int(call.data.split()[2])
     groups_id = groups[group_name]
