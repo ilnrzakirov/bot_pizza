@@ -59,6 +59,11 @@ async def basket(message: types.Message):
 
 
 async def locations(message: types.Message):
+    """
+        Хендлер показывает местонохождение ресторана
+    :param message: commands
+    :return: None
+    """
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
     await message.answer("Что то есть")
 
