@@ -110,6 +110,11 @@ async def get_group_items(call: CallbackQuery):
 
 
 async def add_basket(call: CallbackQuery):
+    """
+        Добавляет товар в корзину
+    :param call: CallbackQuery (id товара либо модификации)
+    :return: None
+    """
     session = session_maker()
     product_id = call.data.split()[1]
     product = await get_product_by_iiko_id(product_id, session)
