@@ -145,6 +145,11 @@ async def add_basket(call: CallbackQuery):
 
 
 async def list_view(call: CallbackQuery):
+    """
+        Покаывает список товаров определенной группы в виде списка
+    :param call: CallbackQuery (id группы)
+    :return: None
+    """
     group_name = call.data.split()[1]
     groups_id = groups[group_name]
     group = await get_group_by_id(groups_id)
