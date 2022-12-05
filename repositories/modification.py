@@ -5,6 +5,11 @@ from settings import session_maker
 
 
 async def get_modifications_by_product_id(product: Product) -> list[Modification]:
+    """
+        Возвращяет модиыикацию по айди продукта
+    :param product: Product
+    :return: Modification
+    """
     session = session_maker()
     query = sqlalchemy.select(Modification).where(Modification.product_id == product.id)
     modification_list = []
