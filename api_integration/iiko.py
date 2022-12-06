@@ -6,7 +6,7 @@ from loguru import logger
 from db.db import Groups, Product, Modification
 from repositories.groups import get_groups_list, get_group_by_id
 from repositories.products import delete_all_products, delete_all_mod, get_product_by_id, get_mod_by_id
-from settings import API_LOGIN, ORG_ID, session_maker, groups, URL_IIKO
+from settings import API_LOGIN, ORG_ID, session_maker, groups, URL_IIKO, URL_PROD
 from utils.parsing import parsing_json
 
 
@@ -26,7 +26,7 @@ async def get_token():
 
 async def get_menu(token: str):
     logger.info("Запрашиваем меню")
-    url = "https://api-ru.iiko.services/api/1/nomenclature"
+    url = URL_PROD
     headers = {
         "Authorization": f"Bearer {token}"
     }

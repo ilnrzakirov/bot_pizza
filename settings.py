@@ -36,3 +36,4 @@ groups = {
 }
 
 URL_IIKO = config("URL_IIKO")
+URL_PROD = config("URL_PROD")
