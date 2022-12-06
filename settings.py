@@ -35,4 +35,4 @@ groups = {
     "Комбо": "dc8ff180-f9a3-4ec4-ab20-9d0d9b1c441c",
 }
 
-URL = config("URL")
+URL_IIKO = config("URL_IIKO")

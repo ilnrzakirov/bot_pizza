@@ -6,13 +6,13 @@ from loguru import logger
 from db.db import Groups, Product, Modification
 from repositories.groups import get_groups_list, get_group_by_id
 from repositories.products import delete_all_products, delete_all_mod, get_product_by_id, get_mod_by_id
-from settings import API_LOGIN, ORG_ID, session_maker, groups, URL
+from settings import API_LOGIN, ORG_ID, session_maker, groups, URL_IIKO
 from utils.parsing import parsing_json
 
 
 async def get_token():
     logger.info("Берем токен АПИ")
-    url = URL
+    url = URL_IIKO
     body = {
         "apiLogin": API_LOGIN
     }
