@@ -7,6 +7,11 @@ from settings import owner
 
 
 async def start(message: types.Message):
+    """
+        Стартовый хендлер. Возврщяет клавиатуру оунера либо клиента
+    :param message: types.Message
+    :return: reply_markup
+    """
     logger.info(f"Получена команда {message.text} от {message.from_user.username} - id {message.from_user.id}")
     if message.from_user.id == int(owner):
         return await message.answer("Привет", reply_markup=owner_keyboard)
